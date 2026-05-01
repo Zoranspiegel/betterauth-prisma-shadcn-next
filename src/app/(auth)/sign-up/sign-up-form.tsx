@@ -42,7 +42,28 @@ export default function SignUpForm() {
   });
 
   function onSubmit(data: SignupFields) {
-    toast(`Username: ${data.name}`);
+    toast("Signed Up", {
+      description: (
+        <div className="pt-2">
+          <p>
+            <span className="font-bold">Name: </span>
+            {data.name}
+          </p>
+          <p>
+            <span className="font-bold">Email: </span>
+            {data.email}
+          </p>
+          <p>
+            <span className="font-bold">Password: </span>
+            {data.password}
+          </p>
+          <p>
+            <span className="font-bold">Confirm Password: </span>
+            {data.passwordConfirmation}
+          </p>
+        </div>
+      ),
+    });
   }
 
   return (
@@ -61,6 +82,7 @@ export default function SignUpForm() {
               <FieldLabel htmlFor="signup-name">Name</FieldLabel>
               <Input
                 {...register("name")}
+                type="text"
                 id="signup-name"
                 aria-invalid={!!errors.name}
                 placeholder="John Doe"
@@ -72,6 +94,7 @@ export default function SignUpForm() {
               <FieldLabel htmlFor="submit-email">Email</FieldLabel>
               <Input
                 {...register("email")}
+                type="email"
                 id="submit-email"
                 aria-invalid={!!errors.email}
                 placeholder="your@email.com"
