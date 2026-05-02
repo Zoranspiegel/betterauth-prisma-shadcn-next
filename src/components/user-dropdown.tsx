@@ -12,18 +12,36 @@ import {
 } from "./ui/dropdown-menu";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import type { User } from "@/lib/auth";
+import Image from "next/image";
 
-export default function UserDropdown() {
+interface UserDropdownProps {
+  user: User;
+}
+
+export default function UserDropdown({ user }: UserDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
-          <UserIcon />
-          <span>USER</span>
+          {user.image ? (
+            <Image
+              src={user.image}
+              alt={user.name}
+              width={16}
+              height={16}
+              className="rounded-full object-cover"
+            />
+          ) : (
+            <UserIcon />
+          )}
+          <span>{user.name}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>user@email.com</DropdownMenuLabel>
+        <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link href="/profile">
@@ -31,7 +49,7 @@ export default function UserDropdown() {
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
-        <AdminItem />
+        {user.role === "ADMIN" && <AdminItem />}
         <SignOutItem />
       </DropdownMenuContent>
     </DropdownMenu>
@@ -52,7 +70,14 @@ function SignOutItem() {
   const router = useRouter();
 
   async function handleSignOut() {
-    // TODO: Handle sign out
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      toast.error(error.message || "Something went wrong");
+    } else {
+      toast.success("Signed out successfully");
+      router.push("/sign-in");
+    }
   }
 
   return (

@@ -20,46 +20,44 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import PasswordInput from "@/components/ui/password-input";
+import { authClient } from "@/lib/auth-client";
 import { signInSchema, type SigninFields } from "@/lib/validations/sign-in";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function SignInForm() {
+  const router = useRouter();
   const {
     control,
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isValid, isSubmitted, isSubmitting },
   } = useForm<SigninFields>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
-      rememberMe: true,
+      rememberMe: false,
     },
   });
 
-  function onSubmit(data: SigninFields) {
-    toast("Logged In", {
-      description: (
-        <div className="pt-2">
-          <p>
-            <span className="font-bold">Email: </span>
-            {data.email}
-          </p>
-          <p>
-            <span className="font-bold">Password: </span>
-            {data.password}
-          </p>
-          <p>
-            <span className="font-bold">Remember me: </span>
-            {data.rememberMe ? "True" : "False"}
-          </p>
-        </div>
-      ),
+  async function onSubmit({ email, password }: SigninFields) {
+    const { error } = await authClient.signIn.email({
+      email,
+      password,
     });
+
+    if (error) {
+      setError("root", { message: error.message || "Something went wrong" });
+    } else {
+      toast.success("Logged in");
+      router.push("/dashboard");
+    }
   }
 
   return (
@@ -126,10 +124,22 @@ export default function SignInForm() {
               )}
             />
 
-            <Button form="signin-form">Login</Button>
+            <Button
+              form="signin-form"
+              disabled={(!isValid && isSubmitted) || isSubmitting}
+            >
+              {isSubmitting ? <Loader2 className="animate-spin" /> : "Login"}
+            </Button>
+
+            {errors.root && (
+              <FieldError className="text-center">
+                {errors.root.message}
+              </FieldError>
+            )}
+
             <Field>
-              <GoogleBtn />
-              <GitHubBtn />
+              <GoogleBtn loading={isSubmitting} />
+              <GitHubBtn loading={isSubmitting} />
             </Field>
           </FieldGroup>
         </form>

@@ -17,20 +17,25 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import PasswordInput from "@/components/ui/password-input";
+import { authClient } from "@/lib/auth-client";
 import {
   signupFieldsSchema,
   type SignupFields,
 } from "@/lib/validations/sign-up";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export default function SignUpForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setError,
+    formState: { errors, isValid, isSubmitted, isSubmitting },
   } = useForm<SignupFields>({
     resolver: zodResolver(signupFieldsSchema),
     defaultValues: {
@@ -41,29 +46,20 @@ export default function SignUpForm() {
     },
   });
 
-  function onSubmit(data: SignupFields) {
-    toast("Signed Up", {
-      description: (
-        <div className="pt-2">
-          <p>
-            <span className="font-bold">Name: </span>
-            {data.name}
-          </p>
-          <p>
-            <span className="font-bold">Email: </span>
-            {data.email}
-          </p>
-          <p>
-            <span className="font-bold">Password: </span>
-            {data.password}
-          </p>
-          <p>
-            <span className="font-bold">Confirm Password: </span>
-            {data.passwordConfirmation}
-          </p>
-        </div>
-      ),
+  async function onSubmit({ name, email, password }: SignupFields) {
+    const { error } = await authClient.signUp.email({
+      name,
+      email,
+      password,
     });
+
+    if (error) {
+      console.log(error);
+      setError("root", { message: error.message || "Something went wrong" });
+    } else {
+      toast.success("Signed up successfully");
+      router.push("/");
+    }
   }
 
   return (
@@ -130,9 +126,18 @@ export default function SignUpForm() {
               )}
             </Field>
 
-            <Button type="submit" form="submit-form">
-              Submit
+            <Button
+              type="submit"
+              form="submit-form"
+              disabled={(!isValid && isSubmitted) || isSubmitting}
+            >
+              {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit"}
             </Button>
+            {errors.root && (
+              <FieldError className="text-center">
+                {errors.root.message}
+              </FieldError>
+            )}
           </FieldGroup>
         </form>
       </CardContent>
