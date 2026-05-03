@@ -50,6 +50,7 @@ export default function SignUpForm() {
       name,
       email,
       password,
+      callbackURL: "/email-verified",
     });
 
     if (error) {
@@ -57,7 +58,7 @@ export default function SignUpForm() {
       setError("root", { message: error.message || "Something went wrong" });
     } else {
       toast.success("Signed up successfully");
-      router.push("/");
+      router.push("/dashboard");
     }
   }
 
@@ -71,7 +72,7 @@ export default function SignUpForm() {
       </CardHeader>
 
       <CardContent>
-        <form id="submit-form" onSubmit={handleSubmit(onSubmit)}>
+        <form id="signup-form" onSubmit={handleSubmit(onSubmit)}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="signup-name">Name</FieldLabel>
@@ -126,7 +127,7 @@ export default function SignUpForm() {
             </Field>
 
             <LoadingButton
-              form="signin-form"
+              form="signup-form"
               loading={isSubmitting}
               disabled={!isValid && isSubmitted}
             >
