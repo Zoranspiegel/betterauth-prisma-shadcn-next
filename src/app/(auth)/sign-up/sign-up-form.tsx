@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/loading-button";
 import {
   Card,
   CardContent,
@@ -23,7 +23,6 @@ import {
   type SignupFields,
 } from "@/lib/validations/sign-up";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -126,13 +125,14 @@ export default function SignUpForm() {
               )}
             </Field>
 
-            <Button
-              type="submit"
-              form="submit-form"
-              disabled={(!isValid && isSubmitted) || isSubmitting}
+            <LoadingButton
+              form="signin-form"
+              loading={isSubmitting}
+              disabled={!isValid && isSubmitted}
             >
-              {isSubmitting ? <Loader2 className="animate-spin" /> : "Submit"}
-            </Button>
+              Submit
+            </LoadingButton>
+
             {errors.root && (
               <FieldError className="text-center">
                 {errors.root.message}

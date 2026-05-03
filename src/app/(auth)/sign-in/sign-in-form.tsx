@@ -2,7 +2,7 @@
 
 import GitHubBtn from "@/components/auth/GitHubBtn";
 import GoogleBtn from "@/components/auth/GoogleBtn";
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/loading-button";
 import {
   Card,
   CardContent,
@@ -23,7 +23,6 @@ import PasswordInput from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth-client";
 import { signInSchema, type SigninFields } from "@/lib/validations/sign-in";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
@@ -124,12 +123,13 @@ export default function SignInForm() {
               )}
             />
 
-            <Button
+            <LoadingButton
               form="signin-form"
-              disabled={(!isValid && isSubmitted) || isSubmitting}
+              loading={isSubmitting}
+              disabled={!isValid && isSubmitted}
             >
-              {isSubmitting ? <Loader2 className="animate-spin" /> : "Login"}
-            </Button>
+              Login
+            </LoadingButton>
 
             {errors.root && (
               <FieldError className="text-center">
