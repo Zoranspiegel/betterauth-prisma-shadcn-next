@@ -10,33 +10,18 @@ import {
 } from "@/components/ui/field";
 import PasswordInput from "@/components/ui/password-input";
 import { authClient } from "@/lib/auth-client";
+import {
+  ResetPasswordFields,
+  resetPasswordFieldsSchema,
+} from "@/lib/validations/password";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
-
-const resetPasswordSchema = z
-  .object({
-    newPassword: z
-      .string()
-      .min(1, { message: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters" })
-      .regex(/[^A-Za-z0-9]/, {
-        message: "Password must contain at least one special character",
-      }),
-    confirmNewPassword: z.string(),
-  })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
-    error: "Passwords do not match",
-    path: ["confirmNewPassword"],
-  });
-
-type ResetPasswordFields = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordForm({ token }: { token: string }) {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const router = useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -44,7 +29,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
     reset,
     formState: { errors, isValid, isSubmitted, isSubmitting },
   } = useForm<ResetPasswordFields>({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordFieldsSchema),
     defaultValues: {
       newPassword: "",
       confirmNewPassword: "",
@@ -60,7 +45,9 @@ export default function ResetPasswordForm({ token }: { token: string }) {
     if (error) {
       setError("root", { message: error.message || "Something went wrong" });
     } else {
-      setSuccessMessage("Password has been reset. You'll be redirected to sign-in...");
+      setSuccessMessage(
+        "Password has been reset. You'll be redirected to sign-in...",
+      );
       setTimeout(() => router.push("/sign-in"), 2000);
       reset();
     }

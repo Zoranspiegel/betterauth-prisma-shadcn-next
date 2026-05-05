@@ -1,16 +1,11 @@
 import { z } from "zod";
+import { passwordFieldSchema } from "./password";
 
 export const signupFieldsSchema = z
   .object({
     name: z.string().min(1, { message: "Name is required" }),
     email: z.email({ message: "Please enter a valid email" }),
-    password: z
-      .string()
-      .min(1, { message: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters" })
-      .regex(/[^A-Za-z0-9]/, {
-        message: "Password must contain at least one special character",
-      }),
+    password: passwordFieldSchema,
     passwordConfirmation: z
       .string()
       .min(1, { message: "Please confirm password" }),

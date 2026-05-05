@@ -2,6 +2,8 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 import { sendEmail } from "./email";
+import { APIError, createAuthMiddleware } from "better-auth/api";
+import { passwordFieldSchema } from "./validations/password";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -9,7 +11,7 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    // requireEmailVerification: true,    
+    // requireEmailVerification: true,
     async sendResetPassword({ user, url }) {
       await sendEmail({
         to: user.email,
@@ -36,6 +38,23 @@ export const auth = betterAuth({
         input: false,
       },
     },
+  },
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (
+        ctx.path === "/sign-up/email" ||
+        ctx.path === "/reset-password" ||
+        ctx.path === "/change-password"
+      ) {
+        const password = ctx.body.password || ctx.body.newPassword;
+        const { error } = passwordFieldSchema.safeParse(password);
+        if (error) {
+          throw new APIError("BAD_REQUEST", {
+            message: error.issues[0].message,
+          });
+        }
+      }
+    }),
   },
 });
 
