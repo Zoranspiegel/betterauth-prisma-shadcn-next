@@ -3,7 +3,6 @@
 import { LoadingButton } from "@/components/loading-button";
 import { authClient } from "@/lib/auth-client";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export default function ResendVerificationButton({ email }: { email: string }) {
   const [isLoading, setIsLoading] = useState(false);

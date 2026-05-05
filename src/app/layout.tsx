@@ -26,6 +26,13 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", jetbrainsMono.variable)}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          async
+          crossOrigin="anonymous"
+          src="https://tweakcn.com/live-preview.min.js"
+        />
+      </head>
       <body className="min-h-full flex flex-col">
         <ThemeProvider
           attribute="class"

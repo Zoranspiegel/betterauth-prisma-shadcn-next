@@ -86,7 +86,7 @@ export default function SignInForm() {
               <div className="flex justify-between">
                 <FieldLabel htmlFor="signin-pasword">Password</FieldLabel>
                 <Link
-                  href="/sign-up"
+                  href="/forgot-password"
                   className="text-muted-foreground underline"
                 >
                   Forgot your password?
