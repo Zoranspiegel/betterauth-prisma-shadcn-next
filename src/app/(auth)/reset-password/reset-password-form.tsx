@@ -60,7 +60,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
     if (error) {
       setError("root", { message: error.message || "Something went wrong" });
     } else {
-      setSuccessMessage("Password has been reset. You can now signin");
+      setSuccessMessage("Password has been reset. You'll be redirected to sign-in...");
       setTimeout(() => router.push("/sign-in"), 2000);
       reset();
     }
