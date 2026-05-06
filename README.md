@@ -1,1 +1,1 @@
-# Better Next
+# Better Auth Next + Prisma
