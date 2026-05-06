@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
-import { sendEmail } from "./email";
+import { sendResetPasswordEmail, sendVerificationEmail } from "./email";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { passwordFieldSchema } from "./validations/password";
 
@@ -13,10 +13,11 @@ export const auth = betterAuth({
     enabled: true,
     // requireEmailVerification: true,
     async sendResetPassword({ user, url }) {
-      await sendEmail({
+      await sendResetPasswordEmail({
         to: user.email,
         subject: "Reset your password",
-        text: `Click the link to reset your password: ${url}`,
+        username: user.name,
+        url,
       });
     },
   },
@@ -24,10 +25,11 @@ export const auth = betterAuth({
     sendOnSignIn: true,
     autoSignInAfterVerification: true,
     async sendVerificationEmail({ user, url }) {
-      await sendEmail({
+      await sendVerificationEmail({
         to: user.email,
         subject: "Verify your email",
-        text: `Click the link to verify your email: ${url}`,
+        username: user.name,
+        url,
       });
     },
   },

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "email": "email dev --dir src/emails"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -23,6 +24,7 @@
     "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-email": "^6.0.8",
     "react-hook-form": "^7.74.0",
     "resend": "^6.12.2",
     "shadcn": "^4.6.0",
@@ -32,6 +34,7 @@
     "zod": "^4.4.1"
   },
   "devDependencies": {
+    "@react-email/ui": "^6.0.8",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
