@@ -6,23 +6,32 @@ on:
       - main
 
 jobs:
-  migrate:
+  ci:
     runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: "pnpm"
-      
-      - run: pnpm install
+          cache: pnpm
 
-      - run: pnpm prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}          
+      - name: Install dependencies
+        run: pnpm install      
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Run Type Checking
+        run: pnpm typecheck
+
+      - name: Audit dependencies
+        run: pnpm audit --audit-level high
