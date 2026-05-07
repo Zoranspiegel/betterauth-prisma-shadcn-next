@@ -1,5 +1,3 @@
-import betterAuthLogo from "@/assets/better_auth_logo.png";
-import codingInFlowLogo from "@/assets/coding_in_flow_logo.jpg";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +8,7 @@ export default function Home() {
       <div className="mx-auto max-w-3xl text-center">
         <div className="mb-8 flex items-center justify-center gap-4">
           <Image
-            src={codingInFlowLogo}
+            src="/better_auth_logo.png"
             alt="Coding in Flow logo"
             width={80}
             height={80}
@@ -18,7 +16,7 @@ export default function Home() {
           />
           <span className="text-muted-foreground text-2xl font-bold">+</span>
           <Image
-            src={betterAuthLogo}
+            src="/coding_in_flow_logo.jpg"
             alt="Better Auth logo"
             width={80}
             height={80}
